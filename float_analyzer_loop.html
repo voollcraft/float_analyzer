@@ -1,0 +1,120 @@
+<canvas id="canvas" width="200" height="900" style="float:left"></canvas>
+
+<canvas id="canvas2" width="200" height="900" style="float:left"></canvas>
+
+<canvas id="canvas3" width="200" height="900" style="float:left"></canvas>
+
+
+<script>
+    
+    var img = new Image();
+    
+    //insert the filename of your image file here
+    img.src = 'my_image.png';
+    
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    
+    var canvas2 = document.getElementById('canvas2');
+    var ctx2 = canvas2.getContext('2d');
+    
+    var canvas3 = document.getElementById('canvas3');
+    var ctx3 = canvas3.getContext('2d');
+    
+    img.onload = function() {
+        
+        ctx.drawImage(img, 0, 0);    
+        ctx2.drawImage(img,0,0);
+        ctx3.drawImage(img,0,0);
+
+        var imageData = ctx2.getImageData(0, 0, canvas2.width, canvas2.height);
+        var data = imageData.data;
+
+        var imageData2 = ctx3.getImageData(0, 0, canvas3.width, canvas3.height);
+        var data2 = imageData2.data;
+
+        //change the max allowed float_length here, as well as how much float to leave before applying corrections
+        var float_length = 13;
+        var float_offset = 1;
+        var num_of_interations = 30;
+
+        var width = imageData.width;
+        var height = imageData.height;
+
+        function analyze_floats() {
+            pixel_changed = 0;
+            for (i = 0; i < height; i ++) {
+                var counter = 0;
+                for (j = 0; j < width; j ++){
+                    if (data[(i * width +j)*4] == data[(i * width +j +1)*4]) {
+                        counter = counter + 1;
+                            if (counter >= float_length) {
+                                    data[(i * width +j)*4] = 200;
+                                    data[(i * width +j)*4+1] = 0;
+                                    data[(i * width +j)*4+2] = 0;
+                            }
+                    } else {
+                        counter = 0
+                    }
+
+                }
+            }
+        ctx2.putImageData(imageData, 0, 0); 
+
+        }
+
+
+
+        for (k = 0; k < num_of_interations; k++) {
+            analyze_floats();
+            correct_floats();  
+        }
+
+        analyze_floats();
+
+
+        function correct_floats() {
+            
+            var jumpback = 0;
+            var changed = false;
+            var new_colour = 0;
+            
+            for (i = 0; i < height; i ++) {
+                for (j = 0; j < width; j ++){
+                    if (data[(i * width +j)*4] != data[(i * width +j +1)*4]) {
+                        changed = false;
+                    }
+                    if (changed == false ) {
+                        if (data[(i * width +j)*4] == 200) {
+                                new_colour = 0;
+                                if (data[(i * width +j - 1 )*4] == 0) {
+                                    new_colour = 255;
+                                } 
+                                jumpback = Math.floor(Math.random()*(float_length - float_offset))
+                                data2[(i * width +j - jumpback)*4] = new_colour
+                                data2[(i * width +j - jumpback)*4+1] = new_colour;
+                                data2[(i * width +j - jumpback)*4+2] = new_colour;
+                                changed = true;
+                        }
+                    }
+                }
+            }
+            
+            ctx3.putImageData(imageData2, 0, 0);  
+            ctx2.putImageData(imageData2,0,0);
+            
+            
+            imageData = ctx2.getImageData(0, 0, canvas2.width, canvas2.height);
+            data = imageData.data;
+
+            imageData2 = ctx3.getImageData(0, 0, canvas3.width, canvas3.height);
+            data2 = imageData2.data;
+        }
+
+        img.style.display = 'none';
+    };
+    
+
+    
+    
+</script>
