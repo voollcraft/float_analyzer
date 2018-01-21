@@ -36,7 +36,7 @@
         //change the max allowed float_length here, as well as how much float to leave before applying corrections
         var float_length = 13;
         var float_offset = 1;
-        var num_of_interations = 30;
+        var num_of_iterations = 30;
 
         var width = imageData.width;
         var height = imageData.height;
@@ -65,7 +65,7 @@
 
 
 
-        for (k = 0; k < num_of_interations; k++) {
+        for (k = 0; k < num_of_iterations; k++) {
             analyze_floats();
             correct_floats();  
         }
