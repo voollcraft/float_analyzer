@@ -17,7 +17,7 @@ A number of parameters can be set in the file:
 
 Line 13: insert your image name. The image needs to be located in the same folder as your script file. 
 
-Line 37: `float_length`, `float_offset` and `num_of_interactions`
+Line 37: `float_length`, `float_offset` and `num_of_iterations`
 
 `float_length` is the longest float that will be allowed. 
 `float_offset` is the length of floats allowed before a correction will be applied. 
